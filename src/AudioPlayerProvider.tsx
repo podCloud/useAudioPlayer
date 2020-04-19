@@ -29,18 +29,19 @@ export function AudioPlayerProvider({
     const playerRef = useRef<Howl>()
 
     const constructHowl = useCallback(
-        ({ src, format, autoplay }: AudioSrcProps): Howl => {
+        ({ src, format, autoplay, ...howlOpts }: AudioSrcProps): Howl => {
             return new Howl({
                 src,
                 format,
-                autoplay
+                autoplay,
+                ...howlOpts
             })
         },
         []
     )
 
     const load = useCallback(
-        ({ src, format, autoplay = false }: AudioSrcProps) => {
+        ({ src, format, autoplay = false, ...howlOpts }: AudioSrcProps) => {
             dispatch({ type: Actions.START_LOAD })
 
             let wasPlaying = false
@@ -61,7 +62,8 @@ export function AudioPlayerProvider({
             const howl = constructHowl({
                 src,
                 format,
-                autoplay: wasPlaying || autoplay // continues playing next song
+                autoplay: wasPlaying || autoplay, // continues playing next song
+                ...howlOpts
             })
 
             // if this howl has already been loaded (cached) then fire the load action
